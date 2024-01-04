@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Mvc5.Models.User>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div id="dataGrid"></div>
+
+
+<script>
+    $(function () {
+        $("#dataGrid").dxDataGrid({
+            dataSource: {
+                load: function() {
+                    return $.getJSON("@Url.Action("GetUsers", "User")");
+                }
+            },
+            columns: [
+                { dataField: "UserName", caption: "UserName" },
+                { dataField: "RoleId", caption: "Role" },
+                { dataField: "LoginCount", caption: "Times logged in" }
+            ],
+            sorting: {
+                mode: "multiple"
+            },
+            paging: {
+                pageSize: 10
+            }
+        });
+    });
+</script>

@@ -1,0 +1,52 @@
+﻿@model Mvc5.Models.User
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm("Create", "User", FormMethod.Post))
+{
+    <div id="registerForm"></div>
+
+    <button type="submit">Register</button>
+}
+
+<div>
+    @Html.ActionLink("Back to login", "Login")
+</div>
+
+<script>
+    $(function () {
+        $("#registerForm").dxForm({
+            formData: @Html.Raw(Json.Encode(Model)),
+            items: [
+                {
+                    dataField: "UserName",
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        placeholder: "Enter your username"
+                    },
+                    label: {
+                        text: "Username"
+                    }
+                },
+                {
+                    dataField: "Password",
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        mode: "password",
+                        placeholder: "Enter your password"
+                    },
+                    label: {
+                        text: "Password"
+                    }
+                }
+            ],
+            colCount: 2  // Arrange the form items in two columns
+        });
+    });
+</script>
