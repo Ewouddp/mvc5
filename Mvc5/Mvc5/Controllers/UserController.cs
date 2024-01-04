@@ -79,7 +79,7 @@ namespace Mvc5.Controllers
                 return View("Login");
             }
         }
-
+        [Authorize]
         public ActionResult GetUsers()
         {
             var test = _userContext.Users.Where(y => y.RoleId == y.Role.Id).ToList();
