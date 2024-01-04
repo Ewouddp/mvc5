@@ -105,7 +105,10 @@ namespace Mvc5.Controllers
                 return RedirectToAction("Login");
             }
             else
-                return View(user);
+            {
+                ModelState.AddModelError("", "User already exists, use a diffrent Username");
+                return View();
+            }
         }
 
     }
