@@ -15,8 +15,6 @@ namespace Mvc5.Controllers
         private UserContext _userContext = new UserContext();
         public ActionResult Index()
         {
-            
-
             return View();
         }
         public ActionResult Login()
@@ -53,24 +51,31 @@ namespace Mvc5.Controllers
         public ActionResult Verify(User user)
         {
             var checkUser = _userContext.Users.Where(x => x.UserName == user.UserName).FirstOrDefault();
-
-            checkUser.Role = _userContext.Roles.Where(x => x.Id == checkUser.RoleId).FirstOrDefault();
-            if (checkUser.UserName == user.UserName && checkUser.Password == user.Password && ModelState.IsValid)
+            if(checkUser != null)
             {
-                FormsAuthentication.SetAuthCookie(user.UserName, false);
+                checkUser.Role = _userContext.Roles.Where(x => x.Id == checkUser.RoleId).FirstOrDefault();
+                if (checkUser.UserName == user.UserName && checkUser.Password == user.Password && ModelState.IsValid)
+                {
+                    FormsAuthentication.SetAuthCookie(user.UserName, false);
 
-                HttpCookie userCookie = new HttpCookie("roleName", checkUser.Role.RoleName);
-                HttpContext.Response.SetCookie(userCookie);
+                    HttpCookie userCookie = new HttpCookie("roleName", checkUser.Role.RoleName);
+                    HttpContext.Response.SetCookie(userCookie);
 
-                // Count how many times logged in
-                checkUser.LoginCount++;
-                _userContext.SaveChanges();
+                    // Count how many times logged in
+                    checkUser.LoginCount++;
+                    _userContext.SaveChanges();
 
-                return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid username or password");
+                    return View("Login");
+                }
             }
             else
             {
-                ModelState.AddModelError("","Invalid username or password");
+                ModelState.AddModelError("", "Invalid username or password");
                 return View("Login");
             }
         }
