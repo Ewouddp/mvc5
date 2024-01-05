@@ -2,6 +2,7 @@
 using Mvc5.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -82,8 +83,16 @@ namespace Mvc5.Controllers
         [Authorize]
         public ActionResult GetUsers()
         {
-            var test = _userContext.Users.Where(y => y.RoleId == y.Role.Id).ToList();
-            return Json(_userContext.Users, JsonRequestBehavior.AllowGet);
+            var users = _userContext.Users.Include(u => u.Role)
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    Password = u.Password,
+                    LoginCount = u.LoginCount,
+                    RoleName = u.Role.RoleName
+                }).ToList();
+            return Json(users, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
